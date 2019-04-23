@@ -2,31 +2,9 @@
 
 This is an [Ansible](http://www.ansible.com) role which configures console permmissions.
 
-## Requirements
-
-[Ansible 2.7+](http://docs.ansible.com/ansible/latest/intro_installation.html)
-
 ## Role Variables
 
 A list of all the default variables for this role is available in `defaults/main.yml`.
-
-## Filters
-
-This role don't provide any.
-
-## Modules
-
-This role don't provide any.
-
-## Tests
-
-The role provides these tests:
-
-- `main.yml`: basic functionality test
-
-## Dependencies
-
-None.
 
 ## Example Playbook
 

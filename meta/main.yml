@@ -3,18 +3,14 @@ galaxy_info:
   author: Daniel Sánchez Fábregas
   description: Configuration of console permmissions
   company: AMTEGA - Xunta de Galicia
-
   license: GPLv3 or EUPL
-
   min_ansible_version: 2.7
-
   platforms:
     - name: Fedora
       versions:
         - 27
         - 28
         - 29
-
     - name: EL
       versions:
         - 6
@@ -23,4 +19,26 @@ galaxy_info:
     - system
     - security
 
-dependencies: []
+dependencies:
+- role: amtega.check_platform
+  vars:
+    check_platform_distributions:
+      centos: 6
+      fedora: 27
+      rhel: 6
+  tags:
+    - role::console_perms
+
+- role: amtega.select_hostvars
+  vars:
+    select_hostvars_query:
+      pattern: "^console_perms_.*"
+      attributes:
+        - path
+        - classes
+        - permissions
+      fact_name: console_perms_hostvars
+      output_type: list
+  when: console_perms_load_from_hostvars
+  tags:
+    - role::console_perms
