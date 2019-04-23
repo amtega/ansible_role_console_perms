@@ -1,2 +1,72 @@
 ---
 # Role default lower priority variables
+
+# Warning! Write permissions as strings:
+#   '0660' without "'" will be interpreted as octal and converted to 432
+
+# List of dicts with the console permissions entries. The dictionaries must
+# have the following structure:
+#
+# - path: path1    # Path of console.perms type file
+#   classes:       # List of defined classes (optional)
+#     - name: class_name1  # Name of the class
+#       files:     # List of file patterns
+#         - file_pattern1
+#         - file_pattern2
+#         - file_patternN
+#     # ...
+#   permissions:   # List of given permissions (optional)
+#       - class: <console_class_name1> # Name of the console class
+#         class_perm: 'permission1a'
+#         device: <file_class_name1>   # Name of the file class affected by the permissions
+#         revert_mode: 'permission1b'
+#         revert_owner: user1
+#         revert_group: group1
+#         # ...
+
+console_perms:
+  - path: /etc/security/console.perms
+    classes:
+      - name: console
+        files:
+          - 'tty[0-9][0-9]*'
+          - 'vc/[0-9][0-9]*'
+          - ':[0-9]+\.[0-9]+'
+          - ':[0-9]+'
+      - name: xconsole
+        files:
+          - ':[0-9]+\.[0-9]+'
+          - ':[0-9]+'
+
+  # Example:
+  # - path: /etc/security/console.perms.d/51-default.perms
+  #   classes:
+  #     - name: floppy
+  #       files:
+  #         - /dev/fd[0-1]*
+  #         - /dev/floppy/*
+  #         - /mnt/floppy*
+  #     - name: sound
+  #       files: ['/dev/dsp*', '/dev/audio*', '/dev/midi*', '/dev/mixer*', '/dev/sequencer', '/dev/sound/*', '/dev/beep', '/dev/snd/*']
+  #     - name: cdrom
+  #       files: ['/dev/cdrom*', '/dev/cdroms/*', '/dev/cdwriter*', '/mnt/cdrom*']
+  #   permissions:
+  #       - class: <console>
+  #         class_perm: '0660'
+  #         device: <floppy>
+  #         revert_mode: '0660'
+  #         revert_owner: root
+  #         revert_group: floppy
+  #       - class: <console>
+  #         class_perm: '0660'
+  #         device: <sound>
+  #         revert_mode: '0640'
+  #         revert_owner: root
+  #       - class: <console>
+  #         class_perm: '0660'
+  #         device: <cdrom>
+  #         revert_mode: '0660'
+  #         revert_owner: root
+  #         revert_group: disk
+
+console_perms_load_from_hostvars: no
