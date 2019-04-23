@@ -1,34 +1,84 @@
-# role_name
+# Ansible console_perms role
 
-A brief description of the role goes here.
-
-## Requirements
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This is an [Ansible](http://www.ansible.com) role which configures console permmissions.
 
 ## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-## Dependencies
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+A list of all the default variables for this role is available in `defaults/main.yml`.
 
 ## Example Playbook
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```yaml
+---
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- hosts: all
+  roles:    
+    - role: amtega.console_perms
+    vars:
+      console_perms:
+        - path: /etc/security/console.perms
+          classes:
+            - name: console
+              files:
+                - 'tty[0-9][0-9]*'
+                - 'vc/[0-9][0-9]*'
+                - ':[0-9]+\.[0-9]+'
+                - ':[0-9]+'
+            - name: xconsole
+              files:
+                - ':[0-9]+\.[0-9]+'
+                - ':[0-9]+'
+          # permissions:
+        - path: /etc/security/console.perms.d/51-default.perms
+          classes:
+            - name: floppy
+              files:
+                - /dev/fd[0-1]*
+                - /dev/floppy/*
+                - /mnt/floppy*
+            - name: sound
+              files: ['/dev/dsp*', '/dev/audio*', '/dev/midi*', '/dev/mixer*', '/dev/sequencer', '/dev/sound/*', '/dev/beep', '/dev/snd/*']
+            - name: cdrom
+              files: ['/dev/cdrom*', '/dev/cdroms/*', '/dev/cdwriter*', '/mnt/cdrom*']
+            - name: scanner
+              files: ['/dev/scanner', '/dev/usb/scanner*']
+          permissions:
+            - class: <console>
+              class_perm: '0660'
+              device: <floppy>
+              revert_mode: 0660
+              revert_owner: root
+              revert_group: floppy
+            - class: <console>
+              class_perm: '0660'
+              device: <sound>
+              revert_mode: 0640
+              revert_owner: root
+            - class: <console>
+              class_perm: '0660'
+              device: <cdrom>
+              revert_mode: 0660
+              revert_owner: root
+              revert_group: disk
+
+```
 
 ## Testing
 
-A description of how to run tests of the role if available.
+<!-- A description of how to run tests of the role if available. For example: -->
+
+Tests are based on docker containers. You can setup docker engine quickly using the playbook `files/setup.yml` available in the role [amtega.docker_engine](https://galaxy.ansible.com/amtega/docker_engine).
+
+Once you have docker, you can run the tests with the following commands:
+
+```shell
+$ cd amtega.console_perms/tests
+$ ansible-playbook main.yml
+```
 
 ## License
 
-Copyright (C) <YEAR> AMTEGA - Xunta de Galicia
+Copyright (C) 2019 AMTEGA - Xunta de Galicia
 
 This role is free software: you can redistribute it and/or modify
 it under the terms of:
@@ -44,5 +94,4 @@ GNU General Public License for more details or European Union Public License for
 
 ## Author Information
 
-- author_name 1.
-- author_name N.
+- Daniel Sánchez Fábregas
