@@ -1,3 +1,6 @@
+---
+# Role dependencies
+
 galaxy_info:
   role_name: console_perms
   author: Daniel Sánchez Fábregas
@@ -20,25 +23,25 @@ galaxy_info:
     - security
 
 dependencies:
-- role: amtega.check_platform
-  vars:
-    check_platform_distributions:
-      centos: 6
-      fedora: 27
-      rhel: 6
-  tags:
-    - role::console_perms
+  - role: amtega.check_platform
+    vars:
+      check_platform_distributions:
+        centos: 6
+        fedora: 27
+        rhel: 6
+    tags:
+      - role::console_perms
 
-- role: amtega.select_hostvars
-  vars:
-    select_hostvars_query:
-      pattern: "^console_perms_.*"
-      attributes:
-        - path
-        - classes
-        - permissions
-      fact_name: console_perms_hostvars
-      output_type: list
-  when: console_perms_load_from_hostvars
-  tags:
-    - role::console_perms
+  - role: amtega.select_hostvars
+    vars:
+      select_hostvars_query:
+        pattern: "^console_perms_.*"
+        attributes:
+          - path
+          - classes
+          - permissions
+        fact_name: console_perms_hostvars
+        output_type: list
+    when: console_perms_load_from_hostvars
+    tags:
+      - role::console_perms

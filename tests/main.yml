@@ -20,7 +20,6 @@
 - name: Prepare docker containers for test
   hosts: docker_sandbox_containers
   tasks:
-
     - name: Setup extra console_perms
       set_fact:
         console_perms_extra:
@@ -32,9 +31,14 @@
   tags:
     - idempotence
 
-- name: Test tcpwrappers role
+- name: Test console_perms role
   hosts: docker_sandbox_containers
   tasks:
+    - include_role:
+        name: amtega.console_perms
+        public: yes
+      vars:
+        console_perms_load_from_hostvars: yes
 
     - name: Add console_perms
       include_role:
@@ -42,59 +46,61 @@
       vars:
         console_perms_load_from_hostvars: yes
         console_perms:
-
           - path: /etc/security/console.perms
             classes:
-
               - name: console
                 files:
-                  - 'tty[0-9][0-9]*'
-                  - 'vc/[0-9][0-9]*'
-                  - ':[0-9]+\.[0-9]+'
-                  - ':[0-9]+'
-
+                  - tty[0-9][0-9]*
+                  - vc/[0-9][0-9]*
+                  - :[0-9]+\.[0-9]+
+                  - :[0-9]+
               - name: xconsole
                 files:
-                  - ':[0-9]+\.[0-9]+'
-                  - ':[0-9]+'
-
+                  - :[0-9]+\.[0-9]+
+                  - :[0-9]+
           - path: /etc/security/console.perms.d/51-default.perms
             classes:
-
               - name: floppy
                 files:
                   - /dev/fd[0-1]*
                   - /dev/floppy/*
                   - /mnt/floppy*
-
               - name: sound
-                files: ['/dev/dsp*', '/dev/audio*', '/dev/midi*', '/dev/mixer*', '/dev/sequencer', '/dev/sound/*', '/dev/beep', '/dev/snd/*']
-
+                files:
+                  - /dev/dsp*
+                  - /dev/audio*
+                  - /dev/midi*
+                  - /dev/mixer*
+                  - /dev/sequencer
+                  - /dev/sound/*
+                  - /dev/beep
+                  - /dev/snd/*
               - name: cdrom
-                files: ['/dev/cdrom*', '/dev/cdroms/*', '/dev/cdwriter*', '/mnt/cdrom*']
-
+                files:
+                  - /dev/cdrom*
+                  - /dev/cdroms/*
+                  - /dev/cdwriter*
+                  - /mnt/cdrom*
               - name: scanner
-                files: ['/dev/scanner', '/dev/usb/scanner*']
-
+                files:
+                  - /dev/scanner
+                  - /dev/usb/scanner
             permissions:
-
               - class: <console>
-                class_perm: '0660'
+                class_perm: "0660"
                 device: <floppy>
-                revert_mode: '0660'
+                revert_mode: "0660"
                 revert_owner: root
                 revert_group: floppy
-
               - class: <console>
-                class_perm: '0660'
+                class_perm: "0660"
                 device: <sound>
                 revert_mode: '0640'
                 revert_owner: root
-
               - class: <console>
-                class_perm: '0660'
+                class_perm: "0660"
                 device: <cdrom>
-                revert_mode: '0660'
+                revert_mode: "0660"
                 revert_owner: root
                 revert_group: disk
 
@@ -103,24 +109,26 @@
       changed_when: false
       loop:
         - file: /etc/security/console.perms
-          line: '<console>=tty[0-9][0-9]* vc/[0-9][0-9]* :[0-9]+\.[0-9]+ :[0-9]+'
+          line: >-
+            <console>=tty[0-9][0-9]* vc/[0-9][0-9]* :[0-9]+\.[0-9]+ :[0-9]+
         - file: /etc/security/console.perms
-          line: '<xconsole>=:[0-9]+\.[0-9]+ :[0-9]+'
-
+          line: "<xconsole>=:[0-9]+\.[0-9]+ :[0-9]+"
         - file: /etc/security/console.perms.d/51-default.perms
-          line: '<floppy>=/dev/fd[0-1]* /dev/floppy/* /mnt/floppy*'
+          line: "<floppy>=/dev/fd[0-1]* /dev/floppy/* /mnt/floppy*"
         - file: /etc/security/console.perms.d/51-default.perms
-          line: '<sound>=/dev/dsp* /dev/audio* /dev/midi* /dev/mixer* /dev/sequencer /dev/sound/* /dev/beep /dev/snd/*'
+          line: >-
+            {{ "<sound>=/dev/dsp* /dev/audio* /dev/midi* /dev/mixer* "
+               + "/dev/sequencer /dev/sound/* /dev/beep /dev/snd/*" }}
         - file: /etc/security/console.perms.d/51-default.perms
-          line: '<cdrom>=/dev/cdrom* /dev/cdroms/* /dev/cdwriter* /mnt/cdrom*'
+          line: "<cdrom>=/dev/cdrom* /dev/cdroms/* /dev/cdwriter* /mnt/cdrom*"
         - file: /etc/security/console.perms.d/51-default.perms
-          line: '<scanner>=/dev/scanner /dev/usb/scanner*'
+          line: "<scanner>=/dev/scanner /dev/usb/scanner*"
         - file: /etc/security/console.perms.d/51-default.perms
-          line: '<console> 0660 <floppy> 0660 root.floppy'
+          line: "<console> 0660 <floppy> 0660 root.floppy"
         - file: /etc/security/console.perms.d/51-default.perms
-          line: '<console> 0660 <sound> 0640 root'
+          line: "<console> 0660 <sound> 0640 root"
         - file: /etc/security/console.perms.d/51-default.perms
-          line: '<console> 0660 <cdrom> 0660 root.disk'
+          line: "<console> 0660 <cdrom> 0660 root.disk"
       register: check_wrappers_result
   tags:
     - idempotence
