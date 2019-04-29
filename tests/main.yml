@@ -84,7 +84,7 @@
               - name: scanner
                 files:
                   - /dev/scanner
-                  - /dev/usb/scanner
+                  - /dev/usb/scanner*
             permissions:
               - class: <console>
                 class_perm: "0660"
@@ -112,13 +112,13 @@
           line: >-
             <console>=tty[0-9][0-9]* vc/[0-9][0-9]* :[0-9]+\.[0-9]+ :[0-9]+
         - file: /etc/security/console.perms
-          line: "<xconsole>=:[0-9]+\.[0-9]+ :[0-9]+"
+          line: '<xconsole>=:[0-9]+\.[0-9]+ :[0-9]+'
         - file: /etc/security/console.perms.d/51-default.perms
           line: "<floppy>=/dev/fd[0-1]* /dev/floppy/* /mnt/floppy*"
         - file: /etc/security/console.perms.d/51-default.perms
           line: >-
-            {{ "<sound>=/dev/dsp* /dev/audio* /dev/midi* /dev/mixer* "
-               + "/dev/sequencer /dev/sound/* /dev/beep /dev/snd/*" }}
+            <sound>=/dev/dsp* /dev/audio* /dev/midi* /dev/mixer*
+            /dev/sequencer /dev/sound/* /dev/beep /dev/snd/*
         - file: /etc/security/console.perms.d/51-default.perms
           line: "<cdrom>=/dev/cdrom* /dev/cdroms/* /dev/cdwriter* /mnt/cdrom*"
         - file: /etc/security/console.perms.d/51-default.perms
