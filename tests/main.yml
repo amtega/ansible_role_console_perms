@@ -33,8 +33,10 @@
 
 - name: Test console_perms role
   hosts: docker_sandbox_containers
+
   tasks:
-    - include_role:
+    - name: Test console_perms defaults
+      include_role:
         name: amtega.console_perms
         public: yes
       vars:

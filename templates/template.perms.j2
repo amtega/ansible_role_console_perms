@@ -2,20 +2,14 @@
 
 {% if 'classes' in console_perms_file.keys() %}
 # device classes
-{%   for _class in console_perms_file['classes'] %}
+{% for _class in console_perms_file['classes'] %}
 <{{ _class.name }}>={{ _class.files | join(' ') }}
-{%   endfor %}
+{% endfor %}
 {% endif %}
 
 {% if 'permissions' in console_perms_file.keys() %}
 # permission definitions
-{%   for perm in console_perms_file['permissions'] %}
-{{        perm.class
-    }} {{ perm.class_perm
-    }} {{ perm.device
-    }} {{ perm.revert_mode | default('0600')
-    }} {{ perm.revert_owner | default('root')
-    }}{% if 'revert_group' in perm.keys() %}.{{ perm.revert_group }} {% endif %}
-
-{%   endfor %}
+{% for perm in console_perms_file['permissions'] %}
+{{ perm.class }} {{ perm.class_perm }} {{ perm.device }} {{ perm.revert_mode | default('0600') }} {{ perm.revert_owner | default('root') }}{% if 'revert_group' in perm.keys() %}.{{ perm.revert_group }} {% endif %}
+{% endfor %}
 {% endif %}

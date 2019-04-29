@@ -2,14 +2,6 @@
 # Role tasks
 
 - name: Configure console permissions
-  vars:
-    console_perms_to_manage: >-
-      {{ console_perms
-         + ((console_perms_load_from_hostvars)
-            | ternary(console_perms
-                      | default([])
-                      | flatten,
-                      [])) }}
   template:
     src: template.perms.j2
     dest: "{{ console_perms_file.path }}"
@@ -19,4 +11,15 @@
     backup: yes
   loop: "{{ console_perms_to_manage }}"
   loop_control:
-      loop_var: console_perms_file
+    loop_var: console_perms_file
+    label: "{{ console_perms_file.path }}"
+  vars:
+    console_perms_to_manage: >-
+      {{ console_perms
+         + ((console_perms_load_from_hostvars)
+            | ternary(console_perms
+                      | default([])
+                      | flatten,
+                      [])) }}
+  tags:
+    - role::console_perms

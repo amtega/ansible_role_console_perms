@@ -28,7 +28,6 @@ A list of all the default variables for this role is available in `defaults/main
               files:
                 - ':[0-9]+\.[0-9]+'
                 - ':[0-9]+'
-          # permissions:
         - path: /etc/security/console.perms.d/51-default.perms
           classes:
             - name: floppy
@@ -37,11 +36,25 @@ A list of all the default variables for this role is available in `defaults/main
                 - /dev/floppy/*
                 - /mnt/floppy*
             - name: sound
-              files: ['/dev/dsp*', '/dev/audio*', '/dev/midi*', '/dev/mixer*', '/dev/sequencer', '/dev/sound/*', '/dev/beep', '/dev/snd/*']
+              files:
+                - /dev/dsp*
+                - /dev/audio*
+                - /dev/midi*
+                - /dev/mixer*
+                - /dev/sequencer
+                - /dev/sound/*
+                - /dev/beep
+                - /dev/snd/*
             - name: cdrom
-              files: ['/dev/cdrom*', '/dev/cdroms/*', '/dev/cdwriter*', '/mnt/cdrom*']
+              files:
+                - /dev/cdrom*
+                - /dev/cdroms/*
+                - /dev/cdwriter*
+                - /mnt/cdrom*
             - name: scanner
-              files: ['/dev/scanner', '/dev/usb/scanner*']
+              files: -
+                - /dev/scanner
+                - /dev/usb/scanner*
           permissions:
             - class: <console>
               class_perm: '0660'
@@ -60,12 +73,9 @@ A list of all the default variables for this role is available in `defaults/main
               revert_mode: 0660
               revert_owner: root
               revert_group: disk
-
 ```
 
 ## Testing
-
-<!-- A description of how to run tests of the role if available. For example: -->
 
 Tests are based on docker containers. You can setup docker engine quickly using the playbook `files/setup.yml` available in the role [amtega.docker_engine](https://galaxy.ansible.com/amtega/docker_engine).
 
