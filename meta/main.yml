@@ -24,9 +24,20 @@ galaxy_info:
 
 dependencies:
   - role: amtega.check_platform
-    tags:
-      - never
+    vars:
+      check_platform_distributions:
+        centos: 6
+        fedora: 27
+        rhel: 6
 
   - role: amtega.select_hostvars
-    tags:
-      - never
+    vars:
+      select_hostvars_query:
+        pattern: "^console_perms_.*"
+        attributes:
+          - path
+          - classes
+          - permissions
+        fact_name: console_perms_hostvars
+        output_type: list
+    when: console_perms_load_from_hostvars
