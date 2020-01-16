@@ -1,27 +1,6 @@
 ---
 # Role tasks
 
-- include_role:
-    name: amtega.check_platform
-  vars:
-    check_platform_distributions:
-      centos: 6
-      fedora: 27
-      rhel: 6
-
-- include_role:
-    name: amtega.select_hostvars
-  vars:
-    select_hostvars_query:
-      pattern: "^console_perms_.*"
-      attributes:
-        - path
-        - classes
-        - permissions
-      fact_name: console_perms_hostvars
-      output_type: list
-  when: console_perms_load_from_hostvars
-
 - name: Configure console permissions
   template:
     src: template.perms.j2
