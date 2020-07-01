@@ -1,0 +1,33 @@
+---
+
+- name: Verify
+  hosts: molecule_hosts
+  gather_facts: no
+  tasks:
+    - name: Check wrappers config
+      shell: grep --fixed-strings "{{ item.line }}" "{{ item.file }}"
+      changed_when: false
+      loop:
+        - file: /etc/security/console.perms
+          line: >-
+            <console>=tty[0-9][0-9]* vc/[0-9][0-9]* :[0-9]+\.[0-9]+ :[0-9]+
+        - file: /etc/security/console.perms
+          line: '<xconsole>=:[0-9]+\.[0-9]+ :[0-9]+'
+        - file: /etc/security/console.perms.d/51-default.perms
+          line: "<floppy>=/dev/fd[0-1]* /dev/floppy/* /mnt/floppy*"
+        - file: /etc/security/console.perms.d/51-default.perms
+          line: >-
+            <sound>=/dev/dsp* /dev/audio* /dev/midi* /dev/mixer*
+            /dev/sequencer /dev/sound/* /dev/beep /dev/snd/*
+        - file: /etc/security/console.perms.d/51-default.perms
+          line: "<cdrom>=/dev/cdrom* /dev/cdroms/* /dev/cdwriter* /mnt/cdrom*"
+        - file: /etc/security/console.perms.d/51-default.perms
+          line: "<scanner>=/dev/scanner /dev/usb/scanner*"
+        - file: /etc/security/console.perms.d/51-default.perms
+          line: "<console> 0660 <floppy> 0660 root.floppy"
+        - file: /etc/security/console.perms.d/51-default.perms
+          line: "<console> 0660 <sound> 0640 root"
+        - file: /etc/security/console.perms.d/51-default.perms
+          line: "<console> 0660 <cdrom> 0660 root.disk"
+      loop_control:
+        label: "{{ item.file }} {{ item.line }}"
