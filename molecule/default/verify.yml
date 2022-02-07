@@ -5,8 +5,8 @@
   gather_facts: no
   tasks:
     - name: Check wrappers config
-      shell: grep --fixed-strings "{{ item.line }}" "{{ item.file }}"
-      changed_when: false
+      command: grep --fixed-strings "{{ item.line }}" "{{ item.file }}"
+      changed_when: no
       loop:
         - file: /etc/security/console.perms
           line: >-
