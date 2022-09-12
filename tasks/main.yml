@@ -1,8 +1,7 @@
 ---
-# Role tasks
 
 - name: Configure console permissions
-  template:
+  ansible.builtin.template:
     src: template.perms.j2
     dest: "{{ console_perms_file.path }}"
     owner: root
